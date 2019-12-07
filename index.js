@@ -42,7 +42,6 @@ const init = async () => {
         path:'/api/{id}/lights',
         handler: (request,h) =>{
             const params = request.params || {}
-
             if(params.id){
                 return lights;
             }
@@ -56,11 +55,28 @@ const init = async () => {
         handler: (request,h) =>{
             const params = request.params || {}
             const payload = request.payload;
+            console.log("je bent bij state aanpassen" + params.id +" en " + params.nummer);
             if(params.id && params.nummer){
-                lights[params.nummer].state.on = payload.on;
+                //Als het over de on param gaat
+                console.dir("payload.on: " + payload)
+
+                let keys = Object.keys(payload);
+                console.log("aantal params: " + keys);
+
+                //lights[params.nummer].state[payload] = payload;
+
+                if(payload.on != null){
+                    lights[params.nummer].state.on = payload.on;
+                    console.log("je bent bij de on param");
+                }
+                //Als het over de kleur param gaat
+                if(payload.xy != null){
+                    lights[params.nummer].state.xy = payload.xy;
+                    console.log("je bent bij de on param");
+                }
+                //data terug opslaan in bestand
                 let data = JSON.stringify(lights);
-                fs.writeFileSync('lights_response.json',data);
-                
+                fs.writeFileSync('lights_response.json',data);               
 
                 return lights[params.nummer].state;
             }
