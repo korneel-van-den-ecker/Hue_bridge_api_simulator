@@ -1,13 +1,25 @@
 {
   "name": "huebridge",
   "version": "1.0.0",
-  "description": "",
+  "description": "Hue Bridge simulator",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon index.js"
   },
-  "keywords": [],
-  "author": "",
+  "dependencies": {
+    "@hapi/hapi": "18.4.0",
+    "nodemon": "2.0.2"
+  },
+  "keywords": [
+    "node",
+    "hapi",
+    "hue",
+    "Philips hue",
+    "hue bridge",
+    "hue simulator",
+    "hue bridge simulator"
+  ],
+  "author": "korneel-van-den-ecker",
   "license": "ISC"
 }
