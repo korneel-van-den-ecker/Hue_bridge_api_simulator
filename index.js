@@ -17,13 +17,12 @@ const init = async () => {
         
     });
 
-    //Hello World Route
     server.route({
         method: 'GET',
         path: '/',
         handler: (request , h) => {
             
-            return 'Hello World!';
+            return 'This API works!';
         }
     });
 
@@ -32,12 +31,15 @@ const init = async () => {
         method:'GET',
         path:'/api/{id}/lights/{nummer}',
         handler: (request,h) =>{
-            const params = request.params || {}
+			return getLightById(request, h);
+        }
+    })
 
-            if(params.id){
-                console.log("hallooeee "  + lights.lenght);    
-                return lights[params.nummer];
-            }
+    server.route({
+        method:'GET',
+        path:'/api/{id}/lights/{nummer}/',
+        handler: (request,h) =>{
+			return getLightById(request, h);
         }
     })
 
@@ -45,59 +47,89 @@ const init = async () => {
         method:'GET',
         path:'/api/{id}/lights',
         handler: (request,h) =>{
-            const params = request.params || {}
-            if(params.id){
-                return lights;
-            }
-        }
+			return getAllLights(request, h);
+		}
     })
 
+    server.route({
+        method:'GET',
+        path:'/api/{id}/lights/',
+        handler: (request,h) =>{
+			return getAllLights(request, h);
+        }
+    })
 
     server.route({
         method:'PUT',
         path:'/api/{id}/lights/{nummer}/state',
         handler: (request,h) =>{
-            const params = request.params || {}
-            const payload = request.payload;
-            console.log("je bent bij state aanpassen" + params.id +" en " + params.nummer);
-            if(params.id && params.nummer){
-                //Als het over de on param gaat
-                console.dir("payload.on: " + payload)
-
-                let keys = Object.keys(payload);
-                console.log("aantal params: " + keys);
-
-                //lights[params.nummer].state[payload] = payload;
-
-                if(payload.on != null){
-                    lights[params.nummer].state.on = payload.on;
-                    console.log("je bent bij de on param");
-                }
-                //Als het over de kleur param gaat
-                if(payload.xy != null){
-                    lights[params.nummer].state.xy = payload.xy;
-                    console.log("je bent bij de on param");
-                }
-                //data terug opslaan in bestand
-                let data = JSON.stringify(lights);
-                fs.writeFileSync('lights_response.json',data);               
-
-                return lights[params.nummer].state;
-            }
+			return updateState(request, h);
         }
     })
 
- 
-
+    server.route({
+        method:'PUT',
+        path:'/api/{id}/lights/{nummer}/state/',
+        handler: (request,h) =>{
+			return updateState(request, h);
+        }
+    })
 
     await server.start();
     console.log('Server running on %s', server.info.uri);
 };
 
 process.on('unhandledRejection', (err) => {
-
     console.log(err);
     process.exit(1);
 });
+
+function getLightById(request, h) {
+	const params = request.params || {}
+	
+	if(params.id){
+		console.log("hallooeee "  + lights.lenght);    
+		return lights[params.nummer];
+	}
+}
+
+function getAllLights(request, h) {
+	const params = request.params || {}
+	
+	if(params.id){
+		return lights;
+	}
+}
+
+function updateState(request, h) {
+	const params = request.params || {}
+	const payload = request.payload;
+	console.log("je bent bij state aanpassen" + params.id +" en " + params.nummer);
+	
+	if(params.id && params.nummer){
+		// Als het over de on param gaat
+		console.dir("payload.on: " + payload)
+
+		let keys = Object.keys(payload);
+		console.log("aantal params: " + keys);
+
+		if(payload.on != null){
+			lights[params.nummer].state.on = payload.on;
+			console.log("je bent bij de on param");
+		}
+		
+		// Als het over de kleur param gaat
+		if(payload.xy != null){
+			lights[params.nummer].state.xy = payload.xy;
+			console.log("je bent bij de on param");
+		}
+		
+		// Data terug opslaan in bestand
+		let data = JSON.stringify(lights);
+		fs.writeFileSync('lights_response.json',data);               
+
+		return lights[params.nummer].state;
+	}
+}
 
 init();
