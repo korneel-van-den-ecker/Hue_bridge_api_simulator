@@ -26,7 +26,6 @@ const init = async () => {
             return 'Hello World!';
         }
     });
-
     
     server.route({
         method:'GET',
